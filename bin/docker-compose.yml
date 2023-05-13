@@ -1,0 +1,26 @@
+version: "3.7"
+
+services:
+    privatebin:
+        container_name: privatebin
+        image: privatebin/nginx-fpm-alpine:stable
+        restart: unless-stopped
+        user: 2001:2001
+        volumes:
+            - '/persist/privatebin/data:/srv/data'
+            - './conf.php:/srv/cfg/conf.php:ro'
+        networks:
+            - traefik
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.privatebin.rule=Host(`bin.oze.li`)"
+            - "traefik.http.routers.privatebin.entrypoints=websecure"
+            - "traefik.http.routers.privatebin.tls=true"
+            - "traefik.http.routers.privatebin.tls.certresolver=letsencrypt"
+            
+networks:
+    traefik:
+        external: true
+        
+        
+        
